@@ -78,10 +78,10 @@
 					}
 				},
 				"extract-i18n": {
-					"builder": "@angular-devkit/build-angular:extract-i18n"
+					"builder": "@angular/build:extract-i18n"
 				},
 				"test": {
-					"builder": "@angular-devkit/build-angular:karma",
+					"builder": "@angular/build:karma",
 					"options": {
 						"polyfills": [
 							"zone.js",
@@ -110,11 +110,10 @@
 			"prefix": "app",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:application",
+					"builder": "ngx-build-plus:browser",
 					"options": {
 						"outputPath": "dist/products-app",
 						"index": "projects/products-app/src/index.html",
-						"browser": "projects/products-app/src/main.ts",
 						"polyfills": [
 							"zone.js"
 						],
@@ -122,13 +121,17 @@
 						"assets": [
 							{
 								"glob": "**/*",
-								"input": "projects/products-app/public"
+								"input": "projects/products-app/public",
+								"output": "."
 							}
 						],
 						"styles": [
 							"projects/products-app/src/styles.css"
 						],
-						"scripts": []
+						"scripts": [],
+						"main": "projects/products-app/src/main.ts",
+						"extraWebpackConfig": "projects/products-app/webpack.config.js",
+						"commonChunk": false
 					},
 					"configurations": {
 						"production": {
@@ -144,7 +147,8 @@
 									"maximumError": "8kB"
 								}
 							],
-							"outputHashing": "all"
+							"outputHashing": "all",
+							"extraWebpackConfig": "projects/products-app/webpack.prod.config.js"
 						},
 						"development": {
 							"optimization": false,
@@ -155,22 +159,28 @@
 					"defaultConfiguration": "production"
 				},
 				"serve": {
-					"builder": "@angular-devkit/build-angular:dev-server",
+					"builder": "ngx-build-plus:dev-server",
 					"configurations": {
 						"production": {
-							"buildTarget": "products-app:build:production"
+							"buildTarget": "products-app:build:production",
+							"extraWebpackConfig": "projects/products-app/webpack.prod.config.js"
 						},
 						"development": {
 							"buildTarget": "products-app:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4201,
+						"publicHost": "http://localhost:4201",
+						"extraWebpackConfig": "projects/products-app/webpack.config.js"
+					}
 				},
 				"extract-i18n": {
-					"builder": "@angular-devkit/build-angular:extract-i18n"
+					"builder": "@angular/build:extract-i18n"
 				},
 				"test": {
-					"builder": "@angular-devkit/build-angular:karma",
+					"builder": "@angular/build:karma",
 					"options": {
 						"polyfills": [
 							"zone.js",
@@ -194,5 +204,31 @@
 	},
 	"cli": {
 		"analytics": "54042f00-ed68-4fc5-ab02-11bd46682ce1"
+	},
+	"schematics": {
+		"@schematics/angular:component": {
+			"type": "component"
+		},
+		"@schematics/angular:directive": {
+			"type": "directive"
+		},
+		"@schematics/angular:service": {
+			"type": "service"
+		},
+		"@schematics/angular:guard": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:interceptor": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:module": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:pipe": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:resolver": {
+			"typeSeparator": "."
+		}
 	}
 }
